@@ -1,5 +1,5 @@
-function [X,Y]=tag(X, Y, scheme);
-%TAG -- Retag the raw data according to a tagging scheme.
+function [X,Y]=retag(X, Y, scheme);
+%RETAG -- Retag the raw data according to a tagging scheme.
 %
 % Input
 %    Xi: (N,60) skeletal frames.
