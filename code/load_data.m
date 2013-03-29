@@ -63,6 +63,9 @@ for i = 1:length(files)
   % Remove 0 columns from X.
   Xf = Xf(:, setdiff([1:80], [4:4:80]));
 
+  % Retag the data.
+  [Xf, Yf] = tag(Xf, Yf);
+
   % Add the data to X and Y.
   if exist('X') && exist('Y')
     X = cat(1,X,Xf);
