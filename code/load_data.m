@@ -60,11 +60,18 @@ for i = 1:length(files)
   % Load the data from the file.
   [Xf,Yf] = load_file(name, tagset);
 
-  % Remove 0 columns from X.
-  Xf = Xf(:, setdiff([1:80], [4:4:80]));
+  % Remove frames past first action.
+  [r,c] = find(Yf == 1);
+  r = r(find(c < 13));
+  seq_end = r(1);
+  Xf = Xf(1:seq_end, :);
+  Yf = Yf(1:seq_end, :);
 
   % Retag the data.
   [Xf, Yf] = tag(Xf, Yf);
+
+  % Remove 0 columns from X.
+  Xf = Xf(:, setdiff([1:80], [4:4:80]));
 
   % Add the data to X and Y.
   if exist('X') && exist('Y')

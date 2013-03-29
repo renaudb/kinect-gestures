@@ -14,7 +14,7 @@ function [X,Y]=tag(X, Y, scheme);
 
 % Set the scheme if left unspecified.
 if nargin < 3
-  scheme = 'last-60';
+  scheme = 'motion';
 end
 
 function [X, Y] = last_n(X, Y, n)
@@ -36,10 +36,26 @@ function [X, Y] = last_n(X, Y, n)
   end
 end
 
+function [X, Y] = motion(X, Y, tol)
+  motion_start = 1;
+  for i=2:size(X,1)
+    dist = sqrt(sum((X(i,:)-X(i-1,:)).^2));
+    if dist > tol
+      motion_start = i;
+      break
+    end
+  end
+  id = find(Y(end,:) == 1);
+  Y(motion_start:end, id) = 1;
+  Y(motion_start:end, 13) = 0;
+end
+
 % Retag according to the given scheme.
 switch scheme
   case 'last-60'
     [X,Y] = last_n(X, Y, 60);
+  case 'motion'
+    [X,Y] = motion(X, Y, 0.1);
   otherwise
     warning('Unexpected ');
 end
