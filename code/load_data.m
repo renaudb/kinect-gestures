@@ -7,9 +7,14 @@ function [X,Y,tagset]=load_data(directory, ratio, gesture_mask);
 % Output
 %    X: (N,60) skeletal frames.
 %    Y: (N,GN+1) 0/1 encoding of gesture presence.
-%    tagset: (1,GN+1) cellarray of gesture names.
+%    tagset: (1,GN) cellarray of gesture names.
 %
 % Author: Renaud Bourassa-Denis
+
+% Set the directory if left unspecified.
+if nargin < 1
+   directory = '../data/'
+end
 
 % Set the ratio if left unspecified.
 if nargin < 2
