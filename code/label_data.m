@@ -12,7 +12,7 @@
 
 % Set the directory if left unspecified.
 
-   directory = '../data/'
+   directory = '../data/';
 
 
 % Set the ratio if left unspecified.
@@ -38,7 +38,7 @@ files = dir(strcat(directory, '/*.csv'));
 file_names = {};
 frame_beginnings = [];
 
-for i = 12:length(files)
+for i = 1:length(files)
   % Break up the file.
   [p,name,e] = fileparts(files(i).name);
 
