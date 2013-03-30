@@ -59,7 +59,11 @@ for i = 1:length(files)
 
   % Load the data from the file.
   [Xf,Yf] = load_file(name, tagset);
- 
+
+  % Skip empty files.
+  if size(Yf, 1) == 0
+      continue
+  end
 
   % Remove frames past first action.
   [r,c] = find(Yf == 1);

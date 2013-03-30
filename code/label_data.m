@@ -63,6 +63,7 @@ for i = 1:length(files)
       continue
   end
 
+  name
   % Remove frames past first action.
   [r,c] = find(Yf == 1);
   r = r(find(c < 13));
