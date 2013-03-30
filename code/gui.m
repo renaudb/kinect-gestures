@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 29-Mar-2013 16:30:12
+% Last Modified by GUIDE v2.5 30-Mar-2013 15:55:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,6 +53,38 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for gui
 handles.output = hObject;
+
+% Load the neural net if given.
+if size(varargin, 2) == 1
+  if ischar(varargin{1})
+    handles.net = load(varargin{1});
+  else
+    handles.net = varargin{1};
+  end
+end
+
+% Put the plots in a list.
+handles.plots = [handles.g1, handles.g2, handles.g3, handles.g4, ...
+                 handles.g5, handles.g6, handles.g7, handles.g8, ...
+		 handles.g9, handles.g10, handles.g11, handles.g12];
+
+% Setup the lines and data.
+handles.lines = zeros(size(handles.plots));
+handles.ldata = zeros(size(handles.plots, 2), 10);
+for i=1:size(handles.plots, 2)
+  % Set current plot.
+  axes(handles.plots(i));
+
+  % Plot line and set YDataSource.
+  handles.lines(i) = plot([1:10] / 10, handles.ldata(i, :));
+  set(handles.lines(i), 'YDataSource', 'handles.ldata(i, :)');
+
+  % Set the axes.
+  set(handles.plots(i),'XTick',[]);
+  set(handles.plots(i),'YTick',[]);
+  set(handles.plots(i),'XLim', [0.0, 1.0]);
+  set(handles.plots(i),'YLim', [0.0, 1.0]);
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -115,7 +147,14 @@ tagset = { 'G1  lift outstretched arms', 'G2  Duck', ...
 % Store the result.
 handles.X = X;
 handles.Y = Y;
+
+% Display the inital skeleton.
+axes(handles.viewer); cla;
+[handles.joints, handles.bones] = gui_skel(X, 1, handles.viewer);
+
+% Store the handles.
 guidata(hObject, handles);
+
 
 % --- Executes on button press in playbutton.
 function playbutton_Callback(hObject, eventdata, handles)
@@ -130,10 +169,71 @@ Y = handles.Y;
 % Get the data size.
 T=size(X,1);
 
+% Unset stop flag.
+handles.stop = 0;
+guidata(hObject, handles);
+
 % Animate sequence
 for ti=1:T
-  gui_skel(X,ti,handles.viewer);
+  % Check if the handle is still valid.
+  if ~ishandle(hObject)
+     break
+  end
+
+  % Check for stop flag.
+  handles = guidata(hObject);
+  if handles.stop
+    axes(handles.viewer); cla;
+    [handles.joints, handles.bones] = gui_skel(X, 1, handles.viewer);
+    break;
+  end
+
+  % Update plots.
+  if isfield(handles, 'net')
+    % Get the input for the frame.
+    x = X(ti, :);
+    x = x(:, setdiff([1:80], [4:4:80]));
+
+    % Get the normalized network output.
+    p = handles.net(x');
+    p = p / sum(p);
+
+    % Update line data.
+    handles.ldata = circshift(handles.ldata, [0, 1]);
+    handles.ldata(:, 1) = p(1:12);
+
+    % Update the plots.
+    for i=1:size(handles.lines, 2)
+      refreshdata(handles.lines(i), 'caller');
+    end
+  end
+
+  % Save the changed data.
+  guidata(hObject, handles);
+
+  % Update viewer with next frame.
+  gui_skel(X, ti, handles.viewer, handles.joints, handles.bones);
   drawnow;
-  pause(1/30);
-  cla;
+  %pause(1/30);
 end
+
+
+% --- Executes on button press in stopbutton.
+function stopbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to stopbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Set stop flag.
+handles.stop = 1;
+guidata(hObject, handles);
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+delete(hObject);
