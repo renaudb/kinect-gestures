@@ -68,7 +68,7 @@ for i = 1:length(files)
   Yf = Yf(1:seq_end, :);
 
   % Retag the data.
-  [Xf, Yf] = retag(Xf, Yf);
+  [Xf, Yf] = retag(Xf, Yf, name);
 
   % Remove 0 columns from X.
   Xf = Xf(:, setdiff([1:80], [4:4:80]));
