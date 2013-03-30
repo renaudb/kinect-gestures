@@ -1,4 +1,4 @@
-%i LOAD_DATA -- Load gesture recognition dataset
+% LOAD_DATA -- Load gesture recognition dataset
 %
 % Input
 %    directory: location of sequences.
@@ -22,7 +22,7 @@
 
 % Set gesture mask to all gesture if unspecified.
 
-  gesture_mask = [10:12];
+  gesture_mask = [1:3];
 
 
 % List of tags.
