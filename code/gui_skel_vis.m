@@ -1,4 +1,4 @@
-function skel_vis(X,tidx,h);
+function gui_skel_vis(X,tidx,h);
 %SKEL_VIS -- Visualize a skeleton in 3D coordinates.
 %
 % Input

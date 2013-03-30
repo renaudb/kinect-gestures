@@ -132,7 +132,7 @@ T=size(X,1);
 
 % Animate sequence
 for ti=1:T
-  skel_vis(X,ti,handles.viewer);
+  gui_skel_vis(X,ti,handles.viewer);
   drawnow;
   pause(1/30);
   cla;
