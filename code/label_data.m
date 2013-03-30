@@ -1,4 +1,4 @@
-%LOAD_DATA -- Load gesture recognition dataset
+%i LOAD_DATA -- Load gesture recognition dataset
 %
 % Input
 %    directory: location of sequences.
