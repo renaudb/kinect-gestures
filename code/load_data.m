@@ -1,4 +1,4 @@
-function [X,Y,tagset]=load_data(directory, ratio, gesture_mask);
+function [X,Y,relX,tagset]=load_data(directory, ratio, gesture_mask);
 %LOAD_DATA -- Load gesture recognition dataset
 %
 % Input
@@ -59,6 +59,7 @@ for i = 1:length(files)
 
   % Load the data from the file.
   [Xf,Yf] = load_file(name, tagset);
+ 
 
   % Remove frames past first action.
   [r,c] = find(Yf == 1);
@@ -72,13 +73,16 @@ for i = 1:length(files)
 
   % Remove 0 columns from X.
   Xf = Xf(:, setdiff([1:80], [4:4:80]));
-
+  relXf=repmat(Xf(:,7:9),1,20)-Xf;
+  
   % Add the data to X and Y.
   if exist('X') && exist('Y')
     X = cat(1,X,Xf);
     Y = cat(1,Y,Yf);
+    relX = cat(1,relX,relXf);
   else
     X = Xf;
     Y = Yf;
+    relX = relXf;
   end
 end
