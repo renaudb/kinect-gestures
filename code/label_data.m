@@ -38,7 +38,7 @@ files = dir(strcat(directory, '/*.csv'));
 file_names = {};
 frame_beginnings = [];
 
-for i = 1:length(files)
+for i = 12:length(files)
   % Break up the file.
   [p,name,e] = fileparts(files(i).name);
 
@@ -63,6 +63,11 @@ for i = 1:length(files)
 
   % Load the data from the file.
   [Xf,Yf] = load_file(name, tagset);
+  
+  if size(Yf, 1) == 0
+      continue
+  end
+  
   % Remove frames past first action.
   [r,c] = find(Yf == 1);
   r = r(find(c < 13));
@@ -92,7 +97,7 @@ for i = 1:length(files)
         ti = max(1, ti - 1);
     else
         % Assuming its a number
-        ti = max(ti + str2double(a), 1);
+        ti = min(ti + str2double(a), T);
     end
     cla;
   end
