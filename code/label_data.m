@@ -1,29 +1,22 @@
-%i LOAD_DATA -- Load gesture recognition dataset
+%LABEL_DATA -- Label the dataset with beginning frames.
 %
 % Input
 %    directory: location of sequences.
 %
 % Output
-%    X: (N,60) skeletal frames.
-%    Y: (N,GN+1) 0/1 encoding of gesture presence.
-%    tagset: (1,GN) cellarray of gesture names.
+%    file_names: files labelled.
+%    frame_beginnings: the beginning frame for each file.
 %
 % Author: Renaud Bourassa-Denis
 
-% Set the directory if left unspecified.
+% Set the directory.
+directory = '../data/';
 
-   directory = '../data/';
+% Set the ratio.
+ratio = 1.0;
 
-
-% Set the ratio if left unspecified.
-
-  ratio = 1.0;
-
-
-% Set gesture mask to all gesture if unspecified.
-
-  gesture_mask = [10:12];
-
+% Set gesture mask.
+gesture_mask = [1:12];
 
 % List of tags.
 tagset = { 'G1  lift outstretched arms', 'G2  Duck', ...
@@ -34,10 +27,11 @@ tagset = { 'G1  lift outstretched arms', 'G2  Duck', ...
 % Load all data files from directory.
 files = dir(strcat(directory, '/*.csv'));
 
-
+% Store the label data.
 file_names = {};
 frame_beginnings = [];
 
+% Iterates over all files.
 for i = 1:length(files)
   % Break up the file.
   [p,name,e] = fileparts(files(i).name);
@@ -63,11 +57,12 @@ for i = 1:length(files)
 
   % Load the data from the file.
   [Xf,Yf] = load_file(name, tagset);
-  
+
+  % Skip empty files.
   if size(Yf, 1) == 0
       continue
   end
-  
+
   % Remove frames past first action.
   [r,c] = find(Yf == 1);
   r = r(find(c < 13));
@@ -78,22 +73,25 @@ for i = 1:length(files)
   % Remove 0 columns from X.
   X = Xf(:, setdiff([1:80], [4:4:80]));
   Y = Yf;
-  
-  h = axes;
-  T = size(X,1);
 
+  % Set the axes.
+  h = axes;
+
+  % Iterate over the frames.
+  T = size(X,1);
   ti = T;
   while ti >= 1
     skel_vis(X,ti,h);
     drawnow;
 
+    % Stop on input.
     a = input('', 's');
     if strcmp(a, 'z')
         file_names{i} = name;
         frame_beginnings(i) = ti;
         break;
     elseif strcmp(a, '')
-        % do nothing
+        % Do nothing
         ti = max(1, ti - 1);
     else
         % Assuming its a number
@@ -101,7 +99,8 @@ for i = 1:length(files)
     end
     cla;
   end
-  
+
+  % Print the result.
   file_names
   frame_beginnings
 end
