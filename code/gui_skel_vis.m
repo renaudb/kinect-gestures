@@ -40,6 +40,10 @@ set(h,'CameraViewAngle',12);
 set(h,'CameraUpVector',[0 1 0]);
 set(h,'Projection','perspective');
 
+set(h,'XTick',[]);
+set(h,'YTick',[]);
+set(h,'ZTick',[]);
+
 set(h,'XLim', [-0.5, 0.5]);
 set(h,'YLim', [-1.0, 1.0]);
 set(h,'ZLim', [ 2.5, 3.0]);
