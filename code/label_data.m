@@ -70,9 +70,6 @@ for i = 1:length(files)
   Xf = Xf(1:seq_end, :);
   Yf = Yf(1:seq_end, :);
 
-  % Retag the data.
-  [Xf, Yf] = tag(Xf, Yf);
-
   % Remove 0 columns from X.
   X = Xf(:, setdiff([1:80], [4:4:80]));
   Y = Yf;
@@ -80,8 +77,8 @@ for i = 1:length(files)
   h = axes;
   T = size(X,1);
 
-  ti = 1;
-  while ti <= T
+  ti = T;
+  while ti >= 1
     skel_vis(X,ti,h);
     drawnow;
 
@@ -92,12 +89,14 @@ for i = 1:length(files)
         break;
     elseif strcmp(a, '')
         % do nothing
-        ti = min(ti + 1, T);
+        ti = max(1, ti - 1);
     else
         % Assuming its a number
-        ti = max(ti - str2double(a), 1);
+        ti = max(ti + str2double(a), 1);
     end
     cla;
   end
-  hold off;
+  
+  file_names
+  frame_beginnings
 end
