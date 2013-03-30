@@ -21,12 +21,12 @@ function net = train_net(X, Y, layers, softmax)
 
   % Setup Division of Data for Training, Validation, Testing
   net.divideParam.trainRatio = 80/100;
-  net.divideParam.valRatio = 20/100;
-  net.divideParam.testRatio = 0/100;
+  net.divideParam.valRatio = 10/100;
+  net.divideParam.testRatio = 10/100;
 
   % Set output to softmax.
   if softmax
-    net.layers{size(layers, 2) + 1}.transferFcn = 'softmax';
+    net.layers{size(layers, 2) + 2}.transferFcn = 'softmax';
   end
 
   % Train the Network
