@@ -34,6 +34,11 @@ tagset = { 'G1  lift outstretched arms', 'G2  Duck', ...
 
 % Load all data files from directory.
 files = dir(strcat(directory, '/*.csv'));
+
+% Randomize files
+s = RandStream('mt19937ar','Seed',0);
+files = files(randperm(s, size(files,1)),:);
+
 for i = 1:length(files)
   % Break up the file.
   [p,name,e] = fileparts(files(i).name);
