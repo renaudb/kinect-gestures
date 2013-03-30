@@ -26,7 +26,7 @@ function net = train_net(X, Y, layers, softmax)
 
   % Set output to softmax.
   if softmax
-    net.layers{size(hiddenLayerSize, 2) + 1}.transferFcn = 'softmax';
+    net.layers{size(layers, 2) + 1}.transferFcn = 'softmax';
   end
 
   % Train the Network
