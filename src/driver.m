@@ -18,12 +18,11 @@ test_net(net, val_relX, val_X, val_Y)
 
 % For sliding window. Note that this also skips frames. Sliding window size
 % and skip sizes can be modified in load_data_sliding.
-[X,Y,slided_relX,weighted_Y z] = load_data_sliding('../data/', 1.0, [1:12]);
+[slided_relX,weighted_Y] = load_data_sliding('../data/', 1.0, [1:12], 5, 3);
 train_relX=slided_relX(1:uint32(size(slided_relX,1)*0.8),:);
 val_relX=slided_relX(uint32(size(slided_relX,1)*0.8)+1:end,:);
 train_Y=weighted_Y(1:uint32(size(weighted_Y,1)*0.8),:);
 val_Y=weighted_Y(uint32(size(weighted_Y,1)*0.8)+1:end,:);
 
-
-net=train_net(train_relX, train_Y, [30 20 15])
+net=train_net(train_relX, train_Y, [100])
 test_net_sliding(net, val_relX, val_Y)

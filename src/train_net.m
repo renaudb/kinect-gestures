@@ -9,7 +9,7 @@ function net = train_net(X, Y, layers, softmax)
   %   Y - target data.
 
   if nargin < 4
-     softmax = 0
+     softmax = 0;
   end
 
   % Get input and output.
