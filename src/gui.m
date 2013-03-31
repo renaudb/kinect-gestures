@@ -55,12 +55,14 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 % Load the neural net if given.
-if size(varargin, 2) == 1
+if size(varargin, 2) >= 1
   if ischar(varargin{1})
     handles.net = load(varargin{1});
   else
     handles.net = varargin{1};
   end
+  handles.window = varargin{2};
+  handles.skip = varargin{3};
 end
 
 % Put the plots in a list.
@@ -76,18 +78,15 @@ for i=1:size(handles.plots, 2)
   axes(handles.plots(i));
 
   % Plot line and set YDataSource.
-  handles.lines(i) = plot([1:10] / 10, handles.ldata(i, :));
+  handles.lines(i) = area(handles.ldata(i, :));
   set(handles.lines(i), 'YDataSource', 'handles.ldata(i, :)');
 
   % Set the axes.
   set(handles.plots(i),'XTick',[]);
   set(handles.plots(i),'YTick',[]);
-  set(handles.plots(i),'XLim', [0.0, 1.0]);
-  set(handles.plots(i),'YLim', [0.0, 1.0]);
+  set(handles.plots(i),'XLim', [0.0, 0.9]);
+  set(handles.plots(i),'YLim', [-0.1, 1.1]);
 end
-
-% Update handles structure
-guidata(hObject, handles);
 
 % Setup the camera.
 tpos=[0, 0, 2.75];
@@ -103,6 +102,9 @@ set(handles.viewer,'XLim', [-0.5, 0.5]);
 set(handles.viewer,'YLim', [-1.0, 1.0]);
 set(handles.viewer,'ZLim', [ 2.5, 3.0]);
 axis(handles.viewer, 'equal');
+
+% Update handles structure
+guidata(hObject, handles);
 
 % UIWAIT makes gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -143,10 +145,13 @@ tagset = { 'G1  lift outstretched arms', 'G2  Duck', ...
 
 % Load the data from the file.
 [X, Y] = load_file(name, tagset);
+[Xp, Yp] = preprocess_data(X, Y, name, handles.window, handles.skip);
 
 % Store the result.
 handles.X = X;
 handles.Y = Y;
+handles.Xp = Xp;
+handles.Yp = Yp;
 
 % Display the inital skeleton.
 axes(handles.viewer); cla;
@@ -165,16 +170,22 @@ function playbutton_Callback(hObject, eventdata, handles)
 % Get the data.
 X = handles.X;
 Y = handles.Y;
+Xp = handles.Xp;
+Yp = handles.Yp;
 
 % Get the data size.
 T=size(X,1);
+Tp=size(Xp,1);
 
 % Unset stop flag.
 handles.stop = 0;
 guidata(hObject, handles);
 
 % Animate sequence
-for ti=1:T
+for i=1:Tp
+  ti = i + (T - Tp);
+  tip = i;
+
   % Check if the handle is still valid.
   if ~ishandle(hObject)
      break
@@ -191,8 +202,7 @@ for ti=1:T
   % Update plots.
   if isfield(handles, 'net')
     % Get the input for the frame.
-    x = X(ti, :);
-    x = x(:, setdiff([1:80], [4:4:80]));
+    x = Xp(tip, :);
 
     % Get the normalized network output.
     p = handles.net(x');
