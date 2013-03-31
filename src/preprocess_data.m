@@ -27,13 +27,14 @@ Xp = Xp(:, setdiff([1:80], [4:4:80]));
 Xp = repmat(Xp(:,7:9),1,20)-Xp;
 
 % Compute final number of rows.
-N = size(Xp, 1) - (s * w - 2);
+N = size(Xp, 1) - ((w - 1) * s);
 
 % Duplicate and reshape data over window.
-idx = [1:N]' * ones(1, w) + repmat([0:s:(s * w) - 1], N, 1);
+idx = [1:N]' * ones(1, w) + repmat([0:s:((s * w) - 1)], N, 1);
 Xp = reshape(Xp(idx',:)', w * size(Xp, 2), [])';
 
 % Compute moving average over window.
-f = zeros(w * s - 1, 1);
-f(1:s:(s * w - 1), 1) = 1 / w;
-Yp = flipud(filter(f, 1, flipud(Yp(1:N, :))));
+f = zeros((w - 1) * s + 1, 1);
+f(1:s:((w - 1) * s + 1), 1) = 1 / w;
+Yp = filter(f, 1, Yp);
+Yp = Yp((size(Yp,1) - N + 1):end, :);
