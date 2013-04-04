@@ -57,6 +57,7 @@ handles.output = hObject;
 % Load the neural net if given.
 if size(varargin, 2) >= 1
   if ischar(varargin{1})
+    'Test'
     handles.net = load(varargin{1});
   else
     handles.net = varargin{1};
@@ -211,6 +212,15 @@ for i=1:Tp
     % Update line data.
     handles.ldata = circshift(handles.ldata, [0, 1]);
     handles.ldata(:, 1) = p(1:12);
+
+    % Update color of current gesture.
+    [m, idx] = max(p, [], 1);
+    if (idx < 13)
+      set(handles.lines(idx), 'FaceColor', 'red');
+      set(handles.lines(setdiff(1:12,idx)), 'FaceColor', 'blue');
+    else
+      set(handles.lines, 'FaceColor', 'blue');
+    end
 
     % Update the plots.
     for i=1:size(handles.lines, 2)
