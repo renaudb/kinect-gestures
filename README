@@ -5,6 +5,15 @@ Description
 -----------
 Kinect gestures detector using neural networks.
 
+Run
+---
+To run the demo, execute the following command.
+
+   ./run.sh
+
+Open the file demo.csv in the data/ folder. Click play.
+
+
 Authors
 -------
 Renaud Bourassa
