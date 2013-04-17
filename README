@@ -9,12 +9,17 @@ Run
 ---
 1. Start the demo with the following command.
 
-   ./run.sh
+    ./run.sh
 
 2. Open the file demo.csv in the data/ folder.
 
 3. Click play.
 
+Data
+----
+The training data is available here:
+
+    http://research.microsoft.com/en-us/um/cambridge/projects/msrc12/
 
 Authors
 -------
